@@ -9,6 +9,7 @@ import userRoutes from './routes/users.js';
 import legalRightRoutes from './routes/legalRights.js';
 import supportServiceRoutes from './routes/supportServices.js';
 import caseNoteRoutes from './routes/caseNotes.js';
+import chatRoutes from './routes/chat.js';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/legal-rights', legalRightRoutes);
 app.use('/api/support-services', supportServiceRoutes);
 app.use('/api/case-notes', caseNoteRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

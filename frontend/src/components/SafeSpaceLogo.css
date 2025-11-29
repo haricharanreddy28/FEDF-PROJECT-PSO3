@@ -1,0 +1,125 @@
+.safe-space-logo {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.logo-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 400px;
+  max-height: 400px;
+  animation: logoFloat 6s ease-in-out infinite;
+}
+
+.logo-circle-outer {
+  animation: rotate 20s linear infinite;
+  transform-origin: center;
+}
+
+.logo-circle-middle {
+  animation: rotate 15s linear infinite reverse;
+  transform-origin: center;
+}
+
+.logo-circle-inner {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.logo-shield {
+  animation: shieldProtect 4s ease-in-out infinite;
+}
+
+.logo-heart {
+  animation: heartbeat 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.logo-hands {
+  animation: handsSupport 3s ease-in-out infinite;
+}
+
+.logo-stars {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.05);
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes handsSupport {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shieldProtect {
+  0%, 100% {
+    opacity: 0.6;
+    transform: translateY(0px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .logo-svg {
+    max-width: 200px;
+    max-height: 200px;
+  }
+}
+

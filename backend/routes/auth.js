@@ -47,9 +47,9 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Incorrect password' });
     }
 
-    // Generate token
+    // Generate token (convert _id to string)
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role, name: user.name },
+      { id: user._id.toString(), email: user.email, role: user.role, name: user.name },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '7d' }
     );
@@ -59,7 +59,7 @@ router.post('/login', async (req, res) => {
       message: 'Login successful',
       token,
       user: {
-        id: user._id,
+        id: user._id.toString(),
         name: user.name,
         email: user.email,
         role: user.role,

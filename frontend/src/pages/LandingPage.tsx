@@ -62,7 +62,9 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
         <div className="hero-image">
-          <div className="hero-shape"></div>
+          <div className="hero-title-large">
+            <h1 className="safe-space-text">SAFE SPACE</h1>
+          </div>
         </div>
       </section>
 

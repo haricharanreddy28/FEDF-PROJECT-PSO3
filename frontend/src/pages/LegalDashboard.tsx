@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getCurrentUser } from '../utils/storage';
-import { getLegalRights, saveLegalRight, deleteLegalRight, getUsers } from '../utils/storage';
+import { getLegalRights, saveLegalRight, deleteLegalRight } from '../utils/storage';
 import { LegalRight, User } from '../types';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import Modal from '../components/Modal';
+import ChatModal from '../components/ChatModal';
+import api from '../utils/api';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -31,11 +33,23 @@ const LegalDashboard: React.FC = () => {
   const [editingRight, setEditingRight] = useState<LegalRight | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [selectedSurvivor, setSelectedSurvivor] = useState<User | null>(null);
+  const [chatSurvivor, setChatSurvivor] = useState<User | null>(null);
 
   useEffect(() => {
     setLegalRights(getLegalRights());
-    const allUsers = getUsers();
-    setSurvivors(allUsers.filter(u => u.role === 'victim'));
+    
+    // Fetch survivors from API
+    const fetchSurvivors = async () => {
+      try {
+        const response = await api.get('/users');
+        const allUsers = response.data;
+        setSurvivors(allUsers.filter((u: User) => u.role === 'victim'));
+      } catch (error) {
+        console.error('Error fetching survivors:', error);
+      }
+    };
+
+    fetchSurvivors();
   }, []);
 
   const {
@@ -149,7 +163,7 @@ const LegalDashboard: React.FC = () => {
                   variant="secondary"
                   size="small"
                   onClick={() => {
-                    setSelectedSurvivor(survivor);
+                    setChatSurvivor(survivor);
                     setChatOpen(true);
                   }}
                 >
@@ -223,28 +237,17 @@ const LegalDashboard: React.FC = () => {
         </Modal>
 
         {/* Chat Modal */}
-        <Modal
-          isOpen={chatOpen}
-          onClose={() => {
-            setChatOpen(false);
-            setSelectedSurvivor(null);
-          }}
-          title={`Chat with ${selectedSurvivor?.name || 'Survivor'}`}
-          size="medium"
-        >
-          <div className="chat-container">
-            <div className="chat-messages">
-              <div className="chat-message">
-                <p>Hello, I need legal guidance regarding my situation.</p>
-                <span className="message-time">10:30 AM</span>
-              </div>
-            </div>
-            <div className="chat-input-area">
-              <input type="text" placeholder="Type your message..." className="chat-input" />
-              <Button variant="primary">Send</Button>
-            </div>
-          </div>
-        </Modal>
+        {chatSurvivor && (
+          <ChatModal
+            isOpen={chatOpen}
+            onClose={() => {
+              setChatOpen(false);
+              setChatSurvivor(null);
+            }}
+            otherUserId={chatSurvivor.id.toString()}
+            otherUserName={chatSurvivor.name}
+          />
+        )}
       </div>
     </Layout>
   );

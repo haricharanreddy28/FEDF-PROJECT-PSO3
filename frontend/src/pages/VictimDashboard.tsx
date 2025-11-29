@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getCurrentUser } from '../utils/storage';
 import { getLegalRights, getSupportServices, getCaseNotes } from '../utils/storage';
-import { CaseNote } from '../types';
+import { CaseNote, User } from '../types';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
 import Card from '../components/Card';
-import Modal from '../components/Modal';
+import ChatModal from '../components/ChatModal';
+import api from '../utils/api';
+import LoadingSpinner from '../components/LoadingSpinner';
 import './Dashboard.css';
 
 const VictimDashboard: React.FC = () => {
@@ -15,11 +17,40 @@ const VictimDashboard: React.FC = () => {
   const [caseNotes, setCaseNotes] = useState<CaseNote[]>([]);
   const [showStealthMode, setShowStealthMode] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [counsellors, setCounsellors] = useState<User[]>([]);
+  const [selectedCounsellor, setSelectedCounsellor] = useState<User | null>(null);
 
   useEffect(() => {
     if (user) {
       const notes = getCaseNotes().filter(note => note.survivorId === user.id);
       setCaseNotes(notes);
+      
+      // Fetch counsellors from API
+      const fetchCounsellors = async () => {
+        try {
+          const response = await api.get('/users');
+          const allUsers = response.data;
+          const counsellorUsers = allUsers.filter((u: User) => u.role === 'counsellor');
+          setCounsellors(counsellorUsers);
+          
+          // If there's a counsellor from case notes, set as default
+          if (notes.length > 0 && counsellorUsers.length > 0) {
+            const counsellorId = notes[0].counsellorId;
+            const counsellor = counsellorUsers.find((c: User) => c.id === counsellorId || c.id.toString() === counsellorId);
+            if (counsellor) {
+              setSelectedCounsellor(counsellor);
+            } else {
+              setSelectedCounsellor(counsellorUsers[0]);
+            }
+          } else if (counsellorUsers.length > 0) {
+            setSelectedCounsellor(counsellorUsers[0]);
+          }
+        } catch (error) {
+          console.error('Error fetching counsellors:', error);
+        }
+      };
+      
+      fetchCounsellors();
     }
   }, [user]);
 
@@ -33,7 +64,17 @@ const VictimDashboard: React.FC = () => {
             <Button variant="primary" size="large" onClick={() => window.open('tel:1091')}>
               🆘 Get Help Now (1091)
             </Button>
-            <Button variant="secondary" size="large" onClick={() => setChatOpen(true)}>
+            <Button 
+              variant="secondary" 
+              size="large" 
+              onClick={() => {
+                if (selectedCounsellor) {
+                  setChatOpen(true);
+                } else {
+                  alert('No counsellor available. Please contact support.');
+                }
+              }}
+            >
               💬 Chat with Counsellor
             </Button>
             <Button variant="outline" size="large" onClick={() => setShowStealthMode(!showStealthMode)}>
@@ -108,20 +149,20 @@ const VictimDashboard: React.FC = () => {
         </section>
 
         {/* Chat Modal */}
-        <Modal isOpen={chatOpen} onClose={() => setChatOpen(false)} title="Chat with Counsellor" size="medium">
-          <div className="chat-container">
-            <div className="chat-messages">
-              <div className="chat-message">
-                <p>Hello! How can I help you today?</p>
-                <span className="message-time">10:30 AM</span>
-              </div>
-            </div>
-            <div className="chat-input-area">
-              <input type="text" placeholder="Type your message..." className="chat-input" />
-              <Button variant="primary">Send</Button>
-            </div>
+        {selectedCounsellor && (
+          <ChatModal
+            isOpen={chatOpen}
+            onClose={() => setChatOpen(false)}
+            otherUserId={selectedCounsellor.id.toString()}
+            otherUserName={selectedCounsellor.name}
+          />
+        )}
+        {!selectedCounsellor && chatOpen && (
+          <div className="chat-error">
+            <p>No counsellor available. Please contact support.</p>
+            <Button onClick={() => setChatOpen(false)}>Close</Button>
           </div>
-        </Modal>
+        )}
       </div>
     </Layout>
   );

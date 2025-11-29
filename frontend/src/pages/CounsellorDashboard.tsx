@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getCurrentUser } from '../utils/storage';
-import { getUsers, getCaseNotes, saveCaseNote, deleteCaseNote } from '../utils/storage';
+import { getCaseNotes, saveCaseNote, deleteCaseNote } from '../utils/storage';
 import { User, CaseNote } from '../types';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import Modal from '../components/Modal';
+import ChatModal from '../components/ChatModal';
+import api from '../utils/api';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -29,11 +31,23 @@ const CounsellorDashboard: React.FC = () => {
   const [showNoteModal, setShowNoteModal] = useState(false);
   const [editingNote, setEditingNote] = useState<CaseNote | null>(null);
   const [showRiskAssessment, setShowRiskAssessment] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatSurvivor, setChatSurvivor] = useState<User | null>(null);
 
   useEffect(() => {
-    const allUsers = getUsers();
-    const victimUsers = allUsers.filter(u => u.role === 'victim');
-    setSurvivors(victimUsers);
+    // Fetch survivors from API
+    const fetchSurvivors = async () => {
+      try {
+        const response = await api.get('/users');
+        const allUsers = response.data;
+        const victimUsers = allUsers.filter((u: User) => u.role === 'victim');
+        setSurvivors(victimUsers);
+      } catch (error) {
+        console.error('Error fetching survivors:', error);
+      }
+    };
+
+    fetchSurvivors();
 
     if (user) {
       const notes = getCaseNotes().filter(note => note.counsellorId === user.id);
@@ -122,7 +136,14 @@ const CounsellorDashboard: React.FC = () => {
                   >
                     Add Note
                   </Button>
-                  <Button variant="outline" size="small">
+                  <Button 
+                    variant="outline" 
+                    size="small"
+                    onClick={() => {
+                      setChatSurvivor(survivor);
+                      setChatOpen(true);
+                    }}
+                  >
                     💬 Chat
                   </Button>
                   <Button variant="outline" size="small">
@@ -273,6 +294,19 @@ const CounsellorDashboard: React.FC = () => {
             </Button>
           </form>
         </Modal>
+
+        {/* Chat Modal */}
+        {chatSurvivor && (
+          <ChatModal
+            isOpen={chatOpen}
+            onClose={() => {
+              setChatOpen(false);
+              setChatSurvivor(null);
+            }}
+            otherUserId={chatSurvivor.id.toString()}
+            otherUserName={chatSurvivor.name}
+          />
+        )}
       </div>
     </Layout>
   );
