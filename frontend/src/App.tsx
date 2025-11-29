@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { initializeDefaultData } from './utils/storage';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -15,8 +15,13 @@ import EmergencyPage from './pages/EmergencyPage';
 import RightsPage from './pages/RightsPage';
 import ContactCounsellorPage from './pages/ContactCounsellorPage';
 import SupportServicesPage from './pages/SupportServicesPage';
+import PaymentSuccessPage from './pages/PaymentSuccessPage';
+import DonationPage from './pages/DonationPage';
 import NotFoundPage from './pages/NotFoundPage';
 
+
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   useEffect(() => {
@@ -26,6 +31,7 @@ function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <ToastContainer position="top-right" autoClose={3000} />
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
@@ -34,6 +40,8 @@ function App() {
           <Route path="/rights" element={<RightsPage />} />
           <Route path="/contact-counsellor" element={<ContactCounsellorPage />} />
           <Route path="/support-services" element={<SupportServicesPage />} />
+          <Route path="/donate" element={<DonationPage />} />
+          <Route path="/payment-success" element={<PaymentSuccessPage />} />
 
           <Route
             path="/dashboard/victim"

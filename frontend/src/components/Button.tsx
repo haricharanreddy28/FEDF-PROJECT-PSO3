@@ -9,6 +9,7 @@ interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
   fullWidth?: boolean;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -20,6 +21,7 @@ const Button: React.FC<ButtonProps> = ({
   type = 'button',
   fullWidth = false,
   className = '',
+  style,
 }) => {
   return (
     <button
@@ -27,6 +29,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
       className={`btn btn-${variant} btn-${size} ${fullWidth ? 'btn-full-width' : ''} ${className}`}
+      style={style}
     >
       {children}
     </button>

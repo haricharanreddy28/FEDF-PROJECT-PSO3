@@ -11,22 +11,102 @@ const seedData = async () => {
   try {
     await connectDB();
 
-    
+
     await User.deleteMany({});
     await LegalRight.deleteMany({});
     await SupportService.deleteMany({});
 
-    
+
     const adminUser = new User({
       name: 'Admin User',
       email: 'admin@safeplace.com',
-      password: 'admin123', 
+      password: 'admin123',
       role: 'admin',
     });
     await adminUser.save();
     console.log('✅ Admin user created');
 
-    
+    // Create Counsellors with South Indian names
+    const counsellors = [
+      {
+        name: 'Dr. Lakshmi Venkataraman',
+        email: 'lakshmi.v@safeplace.com',
+        password: 'counsellor123',
+        role: 'counsellor',
+      },
+      {
+        name: 'Dr. Priya Ramachandran',
+        email: 'priya.r@safeplace.com',
+        password: 'counsellor123',
+        role: 'counsellor',
+      },
+      {
+        name: 'Dr. Meenakshi Subramanian',
+        email: 'meenakshi.s@safeplace.com',
+        password: 'counsellor123',
+        role: 'counsellor',
+      },
+      {
+        name: 'Dr. Kavitha Narayanan',
+        email: 'kavitha.n@safeplace.com',
+        password: 'counsellor123',
+        role: 'counsellor',
+      },
+      {
+        name: 'Dr. Anjali Krishnamurthy',
+        email: 'anjali.k@safeplace.com',
+        password: 'counsellor123',
+        role: 'counsellor',
+      },
+    ];
+
+    for (const counsellorData of counsellors) {
+      const counsellor = new User(counsellorData);
+      await counsellor.save();
+    }
+    console.log('✅ 5 Counsellors created');
+
+    // Create Legal Advisors with South Indian names
+    const legalAdvisors = [
+      {
+        name: 'Adv. Raghavan Iyer',
+        email: 'raghavan.i@safeplace.com',
+        password: 'legal123',
+        role: 'legal',
+      },
+      {
+        name: 'Adv. Suresh Kumar',
+        email: 'suresh.k@safeplace.com',
+        password: 'legal123',
+        role: 'legal',
+      },
+      {
+        name: 'Adv. Vijayalakshmi Reddy',
+        email: 'vijaya.r@safeplace.com',
+        password: 'legal123',
+        role: 'legal',
+      },
+      {
+        name: 'Adv. Balakrishnan Nair',
+        email: 'balakrishnan.n@safeplace.com',
+        password: 'legal123',
+        role: 'legal',
+      },
+      {
+        name: 'Adv. Padmavathi Srinivasan',
+        email: 'padmavathi.s@safeplace.com',
+        password: 'legal123',
+        role: 'legal',
+      },
+    ];
+
+    for (const legalData of legalAdvisors) {
+      const legal = new User(legalData);
+      await legal.save();
+    }
+    console.log('✅ 5 Legal Advisors created');
+
+
     const legalRights = [
       {
         title: 'Constitutional Right to Equality (Article 14 & 15)',
@@ -51,7 +131,7 @@ const seedData = async () => {
     await LegalRight.insertMany(legalRights);
     console.log('✅ Legal rights seeded');
 
-    
+
     const supportServices = [
       {
         name: 'Women Helpline (All India)',

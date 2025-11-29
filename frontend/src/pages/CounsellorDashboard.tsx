@@ -34,22 +34,23 @@ const CounsellorDashboard: React.FC = () => {
   const [chatSurvivor, setChatSurvivor] = useState<User | null>(null);
 
   useEffect(() => {
-    
+
     const fetchSurvivors = async () => {
       try {
-        const response = await api.get('/users');
-        const allUsers = response.data;
-        const victimUsers = allUsers.filter((u: User) => u.role === 'victim');
-        setSurvivors(victimUsers);
+        const response = await api.get('/ai/assigned-victims');
+        setSurvivors(response.data.victims);
       } catch (error) {
         console.error('Error fetching survivors:', error);
       }
     };
 
     fetchSurvivors();
+    const interval = setInterval(fetchSurvivors, 10000); // Poll every 10 seconds
+
+    return () => clearInterval(interval);
 
     if (user) {
-      const notes = getCaseNotes().filter(note => note.counsellorId === user.id);
+      const notes = getCaseNotes().filter(note => user && note.counsellorId === user.id);
       setCaseNotes(notes);
     }
   }, [user]);
@@ -117,40 +118,58 @@ const CounsellorDashboard: React.FC = () => {
               📋 Risk Assessment Form
             </Button>
           </div>
-          <div className="cards-grid">
-            {survivors.map((survivor) => (
-              <Card key={survivor.id} className="survivor-card">
-                <h3>{survivor.name}</h3>
-                <p>{survivor.email}</p>
-                <div className="card-actions">
-                  <Button
-                    variant="secondary"
-                    size="small"
-                    onClick={() => {
-                      setSelectedSurvivor(survivor);
-                      reset({ notes: '', riskLevel: 'low' });
-                      setShowNoteModal(true);
-                    }}
-                  >
-                    Add Note
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="small"
-                    onClick={() => {
-                      setChatSurvivor(survivor);
-                      setChatOpen(true);
-                    }}
-                  >
-                    💬 Chat
-                  </Button>
-                  <Button variant="outline" size="small">
-                    📞 Call
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
+          {survivors.length > 0 ? (
+            <div className="cards-grid">
+              {survivors.map((survivor: any) => (
+                <Card key={survivor.id} className="survivor-card">
+                  <h3>{survivor.name}</h3>
+                  <p>{survivor.email}</p>
+                  {survivor.aiAnalysis && (
+                    <div style={{
+                      marginTop: '8px',
+                      padding: '8px',
+                      background: '#f5f5f5',
+                      borderRadius: '4px',
+                      fontSize: '13px'
+                    }}>
+                      <strong>Initial Analysis:</strong>
+                      <p style={{ margin: '4px 0 0', color: '#666' }}>{survivor.aiAnalysis}</p>
+                    </div>
+                  )}
+                  <div className="card-actions">
+                    <Button
+                      variant="secondary"
+                      size="small"
+                      onClick={() => {
+                        setSelectedSurvivor(survivor);
+                        reset({ notes: '', riskLevel: 'low' });
+                        setShowNoteModal(true);
+                      }}
+                    >
+                      Add Note
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="small"
+                      onClick={() => {
+                        setChatSurvivor(survivor);
+                        setChatOpen(true);
+                      }}
+                    >
+                      💬 Chat
+                    </Button>
+                    <Button variant="outline" size="small">
+                      📞 Call
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card>
+              <p>No survivors assigned yet.</p>
+            </Card>
+          )}
         </section>
 
         <section className="dashboard-section">

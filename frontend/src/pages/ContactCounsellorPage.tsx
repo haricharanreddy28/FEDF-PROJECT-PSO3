@@ -33,9 +33,9 @@ const ContactCounsellorPage: React.FC = () => {
     resolver: yupResolver(contactSchema),
   });
 
-  const onSubmit = async (data: ContactFormData) => {
+  const onSubmit = async () => {
     setLoading(true);
-    
+
     setTimeout(() => {
       setLoading(false);
       setSubmitted(true);

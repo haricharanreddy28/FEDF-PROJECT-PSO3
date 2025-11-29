@@ -6,52 +6,108 @@ import Layout from '../components/Layout';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import ChatModal from '../components/ChatModal';
+import AIChatModal from '../components/AIChatModal';
 import api from '../utils/api';
-import LoadingSpinner from '../components/LoadingSpinner';
+
 
 const VictimDashboard: React.FC = () => {
   const user = getCurrentUser();
-  const [legalRights, setLegalRights] = useState(getLegalRights());
-  const [supportServices, setSupportServices] = useState(getSupportServices());
+  const [legalRights] = useState(getLegalRights());
+  const [supportServices] = useState(getSupportServices());
   const [caseNotes, setCaseNotes] = useState<CaseNote[]>([]);
   const [showStealthMode, setShowStealthMode] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
-  const [counsellors, setCounsellors] = useState<User[]>([]);
-  const [selectedCounsellor, setSelectedCounsellor] = useState<User | null>(null);
+
+  const [selectedProfessional, setSelectedProfessional] = useState<User | null>(null);
+  const [aiChatOpen, setAiChatOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
       const notes = getCaseNotes().filter(note => note.survivorId === user.id);
       setCaseNotes(notes);
-      
-      
+
+      // Fetch assigned professionals
+      const fetchAssignments = async () => {
+        try {
+          console.log('Fetching assignments...');
+          const response = await api.get('/ai/assignments');
+          console.log('Assignments response:', response.data);
+          const assignments = response.data.professionals;
+
+          // If no assignments exist, auto-open AI chat (first login)
+          if (assignments.length === 0) {
+            console.log('No assignments found, opening AI chat');
+            setAiChatOpen(true);
+          } else {
+            // Set the assigned professional for chat
+            const counsellorAssignment = assignments.find((a: any) => a.professionalType === 'counsellor');
+            const legalAssignment = assignments.find((a: any) => a.professionalType === 'legal');
+
+            if (counsellorAssignment) {
+              console.log('Found counsellor assignment:', counsellorAssignment);
+              setSelectedProfessional({
+                id: counsellorAssignment.id,
+                name: counsellorAssignment.name,
+                email: counsellorAssignment.email,
+                role: counsellorAssignment.role,
+                password: '',
+                createdAt: new Date().toISOString()
+              });
+            } else if (legalAssignment) {
+              console.log('Found legal assignment:', legalAssignment);
+              setSelectedProfessional({
+                id: legalAssignment.id,
+                name: legalAssignment.name,
+                email: legalAssignment.email,
+                role: legalAssignment.role,
+                password: '',
+                createdAt: new Date().toISOString()
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching assignments:', error);
+        }
+      };
+
+      fetchAssignments();
+
+      // Fetch counsellors (backup)
       const fetchCounsellors = async () => {
         try {
           const response = await api.get('/users');
           const allUsers = response.data;
           const counsellorUsers = allUsers.filter((u: User) => u.role === 'counsellor');
-          setCounsellors(counsellorUsers);
-          
-          
-          if (notes.length > 0 && counsellorUsers.length > 0) {
-            const counsellorId = notes[0].counsellorId;
-            const counsellor = counsellorUsers.find((c: User) => c.id === counsellorId || c.id.toString() === counsellorId);
-            if (counsellor) {
-              setSelectedCounsellor(counsellor);
-            } else {
-              setSelectedCounsellor(counsellorUsers[0]);
+          // setCounsellors(counsellorUsers);
+
+          // Set fallback counsellor if no assignment exists
+          if (!selectedProfessional && counsellorUsers.length > 0) {
+            if (notes.length > 0) {
+              const counsellorId = notes[0].counsellorId;
+              const counsellor = counsellorUsers.find((c: User) => c.id === counsellorId || c.id.toString() === counsellorId);
+              if (counsellor) {
+                setSelectedProfessional(counsellor);
+              } else {
+                setSelectedProfessional(counsellorUsers[0]);
+              }
             }
-          } else if (counsellorUsers.length > 0) {
-            setSelectedCounsellor(counsellorUsers[0]);
           }
         } catch (error) {
           console.error('Error fetching counsellors:', error);
         }
       };
-      
+
       fetchCounsellors();
     }
   }, [user]);
+
+  const handleConnectProfessional = (professional: User) => {
+    console.log('Connecting to professional:', professional);
+    setSelectedProfessional(professional);
+    setAiChatOpen(false);
+    // Automatically open chat with the assigned professional
+    setChatOpen(true);
+  };
 
   return (
     <Layout title="My Dashboard">
@@ -62,18 +118,12 @@ const VictimDashboard: React.FC = () => {
             <Button variant="primary" size="large" onClick={() => window.open('tel:1091')}>
               🆘 Get Help Now (1091)
             </Button>
-            <Button 
-              variant="secondary" 
-              size="large" 
-              onClick={() => {
-                if (selectedCounsellor) {
-                  setChatOpen(true);
-                } else {
-                  alert('No counsellor available. Please contact support.');
-                }
-              }}
+            <Button
+              variant="secondary"
+              size="large"
+              onClick={() => setAiChatOpen(true)}
             >
-              💬 Chat with Counsellor
+              🤖 AI Assistant & Connect
             </Button>
             <Button variant="outline" size="large" onClick={() => setShowStealthMode(!showStealthMode)}>
               {showStealthMode ? '👁️ Show Account' : '🫥 Hide Account'}
@@ -142,17 +192,23 @@ const VictimDashboard: React.FC = () => {
           )}
         </section>
 
-        {selectedCounsellor && (
+        <AIChatModal
+          isOpen={aiChatOpen}
+          onClose={() => setAiChatOpen(false)}
+          onConnect={handleConnectProfessional}
+        />
+
+        {selectedProfessional && (
           <ChatModal
             isOpen={chatOpen}
             onClose={() => setChatOpen(false)}
-            otherUserId={selectedCounsellor.id.toString()}
-            otherUserName={selectedCounsellor.name}
+            otherUserId={selectedProfessional.id.toString()}
+            otherUserName={selectedProfessional.name}
           />
         )}
-        {!selectedCounsellor && chatOpen && (
+        {!selectedProfessional && chatOpen && (
           <div className="chat-error">
-            <p>No counsellor available. Please contact support.</p>
+            <p>No professional available. Please contact support.</p>
             <Button onClick={() => setChatOpen(false)}>Close</Button>
           </div>
         )}

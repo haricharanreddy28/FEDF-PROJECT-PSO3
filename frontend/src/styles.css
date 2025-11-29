@@ -501,7 +501,7 @@ a {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 100;
+  z-index: 10000;
   animation: pulse 2s infinite;
 }
 

@@ -56,6 +56,14 @@ const LandingPage: React.FC = () => {
             >
               💬 Contact Counsellor
             </Button>
+            <Button
+              variant="primary"
+              size="large"
+              onClick={() => navigate('/donate')}
+              style={{ background: '#FFB74D', border: 'none' }}
+            >
+              ❤️ Donate
+            </Button>
           </div>
         </div>
         <div className="hero-image">

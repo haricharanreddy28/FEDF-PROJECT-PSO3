@@ -10,7 +10,7 @@ router.get('/conversations', authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    
+
     const userIdObj = new mongoose.Types.ObjectId(userId);
     const conversations = await ChatMessage.aggregate([
       {
@@ -58,7 +58,7 @@ router.get('/conversations', authenticate, async (req, res) => {
       },
     ]);
 
-    
+
     const populatedConversations = await ChatMessage.populate(conversations, {
       path: '_id',
       select: 'name email role',
@@ -76,11 +76,11 @@ router.get('/messages/:userId', authenticate, async (req, res) => {
     const currentUserId = req.user.id;
     const otherUserId = req.params.userId;
 
-    
+
     if (!mongoose.Types.ObjectId.isValid(currentUserId)) {
       return res.status(400).json({ message: 'Invalid current user ID format' });
     }
-    
+
     if (!mongoose.Types.ObjectId.isValid(otherUserId)) {
       return res.status(400).json({ message: 'Invalid other user ID format' });
     }
@@ -98,7 +98,7 @@ router.get('/messages/:userId', authenticate, async (req, res) => {
       .populate('receiverId', 'name email role')
       .sort({ createdAt: 1 });
 
-    
+
     await ChatMessage.updateMany(
       {
         senderId: otherUserIdObj,
@@ -121,16 +121,24 @@ router.post('/send', authenticate, async (req, res) => {
     const { receiverId, message } = req.body;
     const senderId = req.user.id;
 
+    console.log('=== SEND MESSAGE ===');
+    console.log('Sender ID:', senderId);
+    console.log('Receiver ID:', receiverId);
+    console.log('Message:', message);
+
     if (!receiverId || !message) {
+      console.log('❌ Missing receiver ID or message');
       return res.status(400).json({ message: 'Receiver ID and message are required' });
     }
 
-    
+    // Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(senderId)) {
+      console.log('❌ Invalid sender ID format');
       return res.status(400).json({ message: 'Invalid sender ID format' });
     }
-    
+
     if (!mongoose.Types.ObjectId.isValid(receiverId)) {
+      console.log('❌ Invalid receiver ID format:', receiverId);
       return res.status(400).json({ message: 'Invalid receiver ID format' });
     }
 
@@ -147,9 +155,10 @@ router.post('/send', authenticate, async (req, res) => {
     await chatMessage.populate('senderId', 'name email role');
     await chatMessage.populate('receiverId', 'name email role');
 
+    console.log('✓ Message sent successfully');
     res.status(201).json(chatMessage);
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error('❌ Error sending message:', error);
     res.status(500).json({ message: error.message || 'Failed to send message' });
   }
 });
@@ -160,12 +169,12 @@ router.put('/read/:userId', authenticate, async (req, res) => {
     const currentUserId = req.user.id;
     const otherUserId = req.params.userId;
 
-    
-    const currentUserIdObj = mongoose.Types.ObjectId.isValid(currentUserId) 
-      ? new mongoose.Types.ObjectId(currentUserId) 
+
+    const currentUserIdObj = mongoose.Types.ObjectId.isValid(currentUserId)
+      ? new mongoose.Types.ObjectId(currentUserId)
       : currentUserId;
-    const otherUserIdObj = mongoose.Types.ObjectId.isValid(otherUserId) 
-      ? new mongoose.Types.ObjectId(otherUserId) 
+    const otherUserIdObj = mongoose.Types.ObjectId.isValid(otherUserId)
+      ? new mongoose.Types.ObjectId(otherUserId)
       : otherUserId;
 
     await ChatMessage.updateMany(

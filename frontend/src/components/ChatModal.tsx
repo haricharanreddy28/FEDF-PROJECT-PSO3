@@ -35,13 +35,16 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, otherUserId, oth
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
+  const [showTransferDialog, setShowTransferDialog] = useState(false);
+  const [transferReason, setTransferReason] = useState('');
+  const [transferring, setTransferring] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const currentUser = getCurrentUser();
 
   useEffect(() => {
     if (isOpen && otherUserId) {
       loadMessages();
-      
+
       const interval = setInterval(loadMessages, 3000);
       return () => clearInterval(interval);
     }
@@ -57,7 +60,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, otherUserId, oth
 
   const loadMessages = async () => {
     if (!otherUserId) return;
-    
+
     try {
       setLoading(true);
       const response = await api.get(`/chat/messages/${otherUserId}`);
@@ -101,6 +104,33 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, otherUserId, oth
     }
   };
 
+  const handleTransferChat = async () => {
+    if (!transferReason.trim()) {
+      alert('Please provide a reason for transfer');
+      return;
+    }
+
+    setTransferring(true);
+    try {
+      const newProfessionalType = currentUser?.role === 'counsellor' ? 'legal' : 'counsellor';
+      const response = await api.post('/ai/transfer', {
+        victimId: otherUserId,
+        newProfessionalType,
+        reason: transferReason
+      });
+
+      alert(`Chat transferred successfully to ${response.data.newProfessional.name}`);
+      setShowTransferDialog(false);
+      setTransferReason('');
+      onClose();
+    } catch (error: any) {
+      console.error('Transfer error:', error);
+      alert(error.response?.data?.message || 'Failed to transfer chat');
+    } finally {
+      setTransferring(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   const isMyMessage = (message: ChatMessage) => {
@@ -119,7 +149,25 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, otherUserId, oth
       <div className="chat-modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="chat-modal-header">
           <h3>💬 Chat with {otherUserName}</h3>
-          <button className="chat-modal-close" onClick={onClose}>×</button>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            {(currentUser?.role === 'counsellor' || currentUser?.role === 'legal') && (
+              <button
+                onClick={() => setShowTransferDialog(true)}
+                style={{
+                  padding: '6px 12px',
+                  borderRadius: '4px',
+                  border: 'none',
+                  background: '#FF9800',
+                  color: 'white',
+                  cursor: 'pointer',
+                  fontSize: '13px'
+                }}
+              >
+                Transfer to {currentUser.role === 'counsellor' ? 'Legal' : 'Counsellor'}
+              </button>
+            )}
+            <button className="chat-modal-close" onClick={onClose}>×</button>
+          </div>
         </div>
 
         <div className="chat-messages-container">
@@ -170,6 +218,68 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, otherUserId, oth
             {sending ? <LoadingSpinner size="small" /> : 'Send'}
           </Button>
         </form>
+
+        {/* Transfer Dialog */}
+        {showTransferDialog && (
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+          }}>
+            <div style={{
+              background: 'white',
+              padding: '24px',
+              borderRadius: '8px',
+              maxWidth: '400px',
+              width: '90%'
+            }} onClick={(e) => e.stopPropagation()}>
+              <h3 style={{ marginBottom: '16px' }}>Transfer Chat</h3>
+              <p style={{ marginBottom: '12px', fontSize: '14px', color: '#666' }}>
+                Transfer this chat to a {currentUser?.role === 'counsellor' ? 'Legal Advisor' : 'Counsellor'}?
+              </p>
+              <textarea
+                value={transferReason}
+                onChange={(e) => setTransferReason(e.target.value)}
+                placeholder="Reason for transfer (required)..."
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '4px',
+                  border: '1px solid #ddd',
+                  minHeight: '80px',
+                  marginBottom: '16px',
+                  fontFamily: 'inherit'
+                }}
+              />
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowTransferDialog(false);
+                    setTransferReason('');
+                  }}
+                  disabled={transferring}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleTransferChat}
+                  disabled={transferring || !transferReason.trim()}
+                >
+                  {transferring ? <LoadingSpinner size="small" /> : 'Transfer'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

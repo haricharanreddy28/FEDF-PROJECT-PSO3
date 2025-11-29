@@ -16,6 +16,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   useEffect(() => {
     saveTheme(theme);
     document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
   }, [theme]);
 
   const toggleTheme = () => {

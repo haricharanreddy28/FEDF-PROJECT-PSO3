@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCurrentUser } from '../utils/storage';
+
 import {
   getUsers,
   addUser,
@@ -13,6 +13,7 @@ import {
 import { User, SupportService, UserRole } from '../types';
 import Layout from '../components/Layout';
 import Button from '../components/Button';
+import AdminAnalytics from '../components/AdminAnalytics';
 import Card from '../components/Card';
 import Modal from '../components/Modal';
 import { useForm } from 'react-hook-form';
@@ -50,9 +51,8 @@ interface ServiceFormData {
 }
 
 const AdminDashboard: React.FC = () => {
-  const user = getCurrentUser();
   const [users, setUsers] = useState<User[]>([]);
-  const [legalRights, setLegalRights] = useState(getLegalRights());
+  const [legalRights] = useState(getLegalRights());
   const [supportServices, setSupportServices] = useState<SupportService[]>([]);
   const [showUserModal, setShowUserModal] = useState(false);
   const [showServiceModal, setShowServiceModal] = useState(false);
@@ -165,6 +165,11 @@ const AdminDashboard: React.FC = () => {
   return (
     <Layout title="Admin Dashboard">
       <div className="dashboard">
+        <section className="dashboard-section">
+          <h2 className="section-title">Analytics Overview</h2>
+          <AdminAnalytics />
+        </section>
+
         <section className="dashboard-section">
           <div className="section-header">
             <h2 className="section-title">User Management</h2>

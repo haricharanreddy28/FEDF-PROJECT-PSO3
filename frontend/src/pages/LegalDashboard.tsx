@@ -31,24 +31,26 @@ const LegalDashboard: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingRight, setEditingRight] = useState<LegalRight | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
-  const [selectedSurvivor, setSelectedSurvivor] = useState<User | null>(null);
+
   const [chatSurvivor, setChatSurvivor] = useState<User | null>(null);
 
   useEffect(() => {
     setLegalRights(getLegalRights());
-    
-    
+
+
     const fetchSurvivors = async () => {
       try {
-        const response = await api.get('/users');
-        const allUsers = response.data;
-        setSurvivors(allUsers.filter((u: User) => u.role === 'victim'));
+        const response = await api.get('/api/ai/assigned-victims');
+        setSurvivors(response.data.victims);
       } catch (error) {
         console.error('Error fetching survivors:', error);
       }
     };
 
     fetchSurvivors();
+    const interval = setInterval(fetchSurvivors, 10000); // Poll every 10 seconds
+
+    return () => clearInterval(interval);
   }, []);
 
   const {
@@ -99,6 +101,7 @@ const LegalDashboard: React.FC = () => {
   return (
     <Layout title="Legal Advisor Dashboard">
       <div className="dashboard">
+        {/* ... (Legal Guidelines section) ... */}
         <section className="dashboard-section">
           <div className="section-header">
             <h2 className="section-title">Legal Guidelines</h2>
@@ -138,36 +141,45 @@ const LegalDashboard: React.FC = () => {
         </section>
 
         <section className="dashboard-section">
-          <h2 className="section-title">Upload Documents</h2>
-          <Card>
-            <p>Upload legal documents, laws, and procedures</p>
-            <input type="file" accept=".pdf,.doc,.docx" className="file-input" />
-            <Button variant="primary" onClick={() => alert('Document upload feature - to be integrated')}>
-              Upload Document
-            </Button>
-          </Card>
-        </section>
-
-        <section className="dashboard-section">
-          <h2 className="section-title">Chat with Survivors</h2>
-          <div className="cards-grid">
-            {survivors.map((survivor) => (
-              <Card key={survivor.id} className="survivor-card">
-                <h3>{survivor.name}</h3>
-                <p>{survivor.email}</p>
-                <Button
-                  variant="secondary"
-                  size="small"
-                  onClick={() => {
-                    setChatSurvivor(survivor);
-                    setChatOpen(true);
-                  }}
-                >
-                  💬 Chat
-                </Button>
-              </Card>
-            ))}
-          </div>
+          <h2 className="section-title">Assigned Clients</h2>
+          {survivors.length > 0 ? (
+            <div className="cards-grid">
+              {survivors.map((survivor: any) => (
+                <Card key={survivor.id} className="survivor-card">
+                  <h3>{survivor.name}</h3>
+                  <p>{survivor.email}</p>
+                  {survivor.aiAnalysis && (
+                    <div style={{
+                      marginTop: '8px',
+                      padding: '8px',
+                      background: '#f5f5f5',
+                      borderRadius: '4px',
+                      fontSize: '13px'
+                    }}>
+                      <strong>Initial Analysis:</strong>
+                      <p style={{ margin: '4px 0 0', color: '#666' }}>{survivor.aiAnalysis}</p>
+                    </div>
+                  )}
+                  <div style={{ marginTop: '16px' }}>
+                    <Button
+                      variant="secondary"
+                      size="small"
+                      onClick={() => {
+                        setChatSurvivor(survivor);
+                        setChatOpen(true);
+                      }}
+                    >
+                      💬 Chat with Client
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card>
+              <p>No clients assigned yet.</p>
+            </Card>
+          )}
         </section>
 
         <section className="dashboard-section">
