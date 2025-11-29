@@ -3,7 +3,6 @@ import { getCurrentUser } from '../utils/storage';
 import api from '../utils/api';
 import Button from './Button';
 import LoadingSpinner from './LoadingSpinner';
-import './ChatModal.css';
 
 interface ChatMessage {
   _id: string;
@@ -42,7 +41,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose, otherUserId, oth
   useEffect(() => {
     if (isOpen && otherUserId) {
       loadMessages();
-      // Poll for new messages every 3 seconds
+      
       const interval = setInterval(loadMessages, 3000);
       return () => clearInterval(interval);
     }

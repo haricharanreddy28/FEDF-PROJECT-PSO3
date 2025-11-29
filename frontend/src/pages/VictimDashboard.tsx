@@ -8,7 +8,6 @@ import Card from '../components/Card';
 import ChatModal from '../components/ChatModal';
 import api from '../utils/api';
 import LoadingSpinner from '../components/LoadingSpinner';
-import './Dashboard.css';
 
 const VictimDashboard: React.FC = () => {
   const user = getCurrentUser();
@@ -25,7 +24,7 @@ const VictimDashboard: React.FC = () => {
       const notes = getCaseNotes().filter(note => note.survivorId === user.id);
       setCaseNotes(notes);
       
-      // Fetch counsellors from API
+      
       const fetchCounsellors = async () => {
         try {
           const response = await api.get('/users');
@@ -33,7 +32,7 @@ const VictimDashboard: React.FC = () => {
           const counsellorUsers = allUsers.filter((u: User) => u.role === 'counsellor');
           setCounsellors(counsellorUsers);
           
-          // If there's a counsellor from case notes, set as default
+          
           if (notes.length > 0 && counsellorUsers.length > 0) {
             const counsellorId = notes[0].counsellorId;
             const counsellor = counsellorUsers.find((c: User) => c.id === counsellorId || c.id.toString() === counsellorId);
@@ -57,7 +56,6 @@ const VictimDashboard: React.FC = () => {
   return (
     <Layout title="My Dashboard">
       <div className="dashboard">
-        {/* Quick Actions */}
         <section className="dashboard-section">
           <h2 className="section-title">Quick Actions</h2>
           <div className="action-buttons">
@@ -83,7 +81,6 @@ const VictimDashboard: React.FC = () => {
           </div>
         </section>
 
-        {/* Stealth Mode UI */}
         {showStealthMode && (
           <section className="dashboard-section stealth-mode">
             <Card>
@@ -93,7 +90,6 @@ const VictimDashboard: React.FC = () => {
           </section>
         )}
 
-        {/* Legal Rights */}
         <section className="dashboard-section">
           <h2 className="section-title">Know Your Rights</h2>
           <div className="cards-grid">
@@ -107,7 +103,6 @@ const VictimDashboard: React.FC = () => {
           </div>
         </section>
 
-        {/* Support Services */}
         <section className="dashboard-section">
           <h2 className="section-title">Support Services</h2>
           <div className="cards-grid">
@@ -124,7 +119,6 @@ const VictimDashboard: React.FC = () => {
           </div>
         </section>
 
-        {/* Progress Notes from Counsellor */}
         <section className="dashboard-section">
           <h2 className="section-title">Progress Notes</h2>
           {caseNotes.length > 0 ? (
@@ -148,7 +142,6 @@ const VictimDashboard: React.FC = () => {
           )}
         </section>
 
-        {/* Chat Modal */}
         {selectedCounsellor && (
           <ChatModal
             isOpen={chatOpen}

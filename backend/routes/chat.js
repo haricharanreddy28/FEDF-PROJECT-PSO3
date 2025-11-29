@@ -5,12 +5,12 @@ import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Get all conversations for the current user
+
 router.get('/conversations', authenticate, async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // Get all unique conversations (people the user has chatted with)
+    
     const userIdObj = new mongoose.Types.ObjectId(userId);
     const conversations = await ChatMessage.aggregate([
       {
@@ -58,7 +58,7 @@ router.get('/conversations', authenticate, async (req, res) => {
       },
     ]);
 
-    // Populate user details
+    
     const populatedConversations = await ChatMessage.populate(conversations, {
       path: '_id',
       select: 'name email role',
@@ -70,13 +70,13 @@ router.get('/conversations', authenticate, async (req, res) => {
   }
 });
 
-// Get messages between current user and another user
+
 router.get('/messages/:userId', authenticate, async (req, res) => {
   try {
     const currentUserId = req.user.id;
     const otherUserId = req.params.userId;
 
-    // Validate and convert to ObjectId
+    
     if (!mongoose.Types.ObjectId.isValid(currentUserId)) {
       return res.status(400).json({ message: 'Invalid current user ID format' });
     }
@@ -98,7 +98,7 @@ router.get('/messages/:userId', authenticate, async (req, res) => {
       .populate('receiverId', 'name email role')
       .sort({ createdAt: 1 });
 
-    // Mark messages as read
+    
     await ChatMessage.updateMany(
       {
         senderId: otherUserIdObj,
@@ -115,7 +115,7 @@ router.get('/messages/:userId', authenticate, async (req, res) => {
   }
 });
 
-// Send a message
+
 router.post('/send', authenticate, async (req, res) => {
   try {
     const { receiverId, message } = req.body;
@@ -125,7 +125,7 @@ router.post('/send', authenticate, async (req, res) => {
       return res.status(400).json({ message: 'Receiver ID and message are required' });
     }
 
-    // Validate and convert to ObjectId
+    
     if (!mongoose.Types.ObjectId.isValid(senderId)) {
       return res.status(400).json({ message: 'Invalid sender ID format' });
     }
@@ -154,13 +154,13 @@ router.post('/send', authenticate, async (req, res) => {
   }
 });
 
-// Mark messages as read
+
 router.put('/read/:userId', authenticate, async (req, res) => {
   try {
     const currentUserId = req.user.id;
     const otherUserId = req.params.userId;
 
-    // Convert to ObjectId if needed
+    
     const currentUserIdObj = mongoose.Types.ObjectId.isValid(currentUserId) 
       ? new mongoose.Types.ObjectId(currentUserId) 
       : currentUserId;

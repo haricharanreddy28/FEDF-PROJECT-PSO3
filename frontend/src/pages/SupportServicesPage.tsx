@@ -2,7 +2,6 @@ import React from 'react';
 import { getSupportServices } from '../utils/storage';
 import Card from '../components/Card';
 import SafeExitButton from '../components/SafeExitButton';
-import './SupportServicesPage.css';
 
 const SupportServicesPage: React.FC = () => {
   const services = getSupportServices();

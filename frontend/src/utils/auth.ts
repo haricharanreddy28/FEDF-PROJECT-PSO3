@@ -4,7 +4,7 @@ import api from './api';
 
 export const registerUser = async (name: string, email: string, password: string, role: UserRole): Promise<{ success: boolean; message: string }> => {
   try {
-    // Validate password
+    
     if (password.length < 6) {
       return { success: false, message: 'Password must be at least 6 characters' };
     }
@@ -31,15 +31,15 @@ export const loginUser = async (email: string, password: string): Promise<{ succ
     if (response.data.success) {
       const { token, user } = response.data;
       
-      // Store token
+      
       localStorage.setItem('auth_token', token);
       
-      // Store user in session
+      
       const userData: User = {
         id: user.id,
         name: user.name,
         email: user.email,
-        password: '', // Don't store password
+        password: '', 
         role: user.role,
         createdAt: new Date().toISOString(),
       };

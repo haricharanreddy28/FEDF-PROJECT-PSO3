@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import Card from '../components/Card';
-import './NotFoundPage.css';
 
 const NotFoundPage: React.FC = () => {
   const navigate = useNavigate();

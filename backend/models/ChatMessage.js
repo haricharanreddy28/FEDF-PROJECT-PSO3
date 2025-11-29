@@ -26,7 +26,7 @@ const chatMessageSchema = new mongoose.Schema({
   },
 });
 
-// Index for efficient querying
+
 chatMessageSchema.index({ senderId: 1, receiverId: 1, createdAt: -1 });
 
 export default mongoose.model('ChatMessage', chatMessageSchema);

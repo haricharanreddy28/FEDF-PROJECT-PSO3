@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import SafeExitButton from '../components/SafeExitButton';
 import Card from '../components/Card';
-import './LandingPage.css';
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -29,8 +28,6 @@ const LandingPage: React.FC = () => {
   return (
     <div className="landing-page">
       <SafeExitButton />
-      
-      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">You Are Not Alone. We Are Here to Help.</h1>
@@ -68,7 +65,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Quick Access Section */}
       <section className="quick-access-section">
         <h2 className="section-title">Quick Access</h2>
         <div className="quick-access-grid">
@@ -103,7 +99,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="testimonials-section">
         <h2 className="section-title">Stories of Hope</h2>
         <div className="testimonials-grid">
@@ -116,7 +111,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Login/Register Section */}
       <section className="auth-section">
         <div className="auth-content">
           <h2>Get Started</h2>

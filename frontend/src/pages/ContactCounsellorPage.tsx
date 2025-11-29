@@ -6,7 +6,6 @@ import Card from '../components/Card';
 import Button from '../components/Button';
 import SafeExitButton from '../components/SafeExitButton';
 import LoadingSpinner from '../components/LoadingSpinner';
-import './ContactCounsellorPage.css';
 
 const contactSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -36,7 +35,7 @@ const ContactCounsellorPage: React.FC = () => {
 
   const onSubmit = async (data: ContactFormData) => {
     setLoading(true);
-    // Simulate API call
+    
     setTimeout(() => {
       setLoading(false);
       setSubmitted(true);

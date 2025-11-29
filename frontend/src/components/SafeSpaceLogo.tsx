@@ -1,5 +1,4 @@
 import React from 'react';
-import './SafeSpaceLogo.css';
 
 const SafeSpaceLogo: React.FC = () => {
   return (
@@ -9,7 +8,6 @@ const SafeSpaceLogo: React.FC = () => {
         className="logo-svg"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Outer protective circle - representing safety */}
         <circle
           cx="100"
           cy="100"
@@ -20,7 +18,6 @@ const SafeSpaceLogo: React.FC = () => {
           className="logo-circle-outer"
         />
         
-        {/* Middle circle - representing community */}
         <circle
           cx="100"
           cy="100"
@@ -31,7 +28,6 @@ const SafeSpaceLogo: React.FC = () => {
           className="logo-circle-middle"
         />
         
-        {/* Inner circle - representing unity */}
         <circle
           cx="100"
           cy="100"
@@ -41,14 +37,12 @@ const SafeSpaceLogo: React.FC = () => {
           className="logo-circle-inner"
         />
         
-        {/* Heart symbol - representing care, love, and support */}
         <path
           d="M100,140 C100,140 75,115 75,95 C75,82 85,72 100,72 C115,72 125,82 125,95 C125,115 100,140 100,140 Z"
           fill="url(#gradient4)"
           className="logo-heart"
         />
         
-        {/* Shield/Protection symbol */}
         <path
           d="M100,60 L120,70 L120,100 Q120,115 100,125 Q80,115 80,100 L80,70 Z"
           fill="none"
@@ -58,7 +52,6 @@ const SafeSpaceLogo: React.FC = () => {
           className="logo-shield"
         />
         
-        {/* Small decorative elements - representing hope and light */}
         <g className="logo-stars">
           <circle cx="45" cy="45" r="3" fill="#4ECDC4" opacity="0.9" />
           <circle cx="155" cy="45" r="3" fill="#9B7EDE" opacity="0.9" />
@@ -66,7 +59,6 @@ const SafeSpaceLogo: React.FC = () => {
           <circle cx="155" cy="155" r="3" fill="#4ECDC4" opacity="0.9" />
         </g>
         
-        {/* Gradient definitions */}
         <defs>
           <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#9B7EDE" />

@@ -11,7 +11,6 @@ import api from '../utils/api';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import './Dashboard.css';
 
 const caseNoteSchema = yup.object({
   notes: yup.string().required('Notes are required'),
@@ -35,7 +34,7 @@ const CounsellorDashboard: React.FC = () => {
   const [chatSurvivor, setChatSurvivor] = useState<User | null>(null);
 
   useEffect(() => {
-    // Fetch survivors from API
+    
     const fetchSurvivors = async () => {
       try {
         const response = await api.get('/users');
@@ -111,7 +110,6 @@ const CounsellorDashboard: React.FC = () => {
   return (
     <Layout title="Counsellor Dashboard">
       <div className="dashboard">
-        {/* Assigned Survivors */}
         <section className="dashboard-section">
           <div className="section-header">
             <h2 className="section-title">Assigned Survivors</h2>
@@ -155,7 +153,6 @@ const CounsellorDashboard: React.FC = () => {
           </div>
         </section>
 
-        {/* Case Notes */}
         <section className="dashboard-section">
           <h2 className="section-title">Case Notes</h2>
           {caseNotes.length > 0 ? (
@@ -193,7 +190,6 @@ const CounsellorDashboard: React.FC = () => {
           )}
         </section>
 
-        {/* Schedule Sessions */}
         <section className="dashboard-section">
           <h2 className="section-title">Schedule Sessions</h2>
           <Card>
@@ -204,7 +200,6 @@ const CounsellorDashboard: React.FC = () => {
           </Card>
         </section>
 
-        {/* Case Note Modal */}
         <Modal
           isOpen={showNoteModal}
           onClose={() => {
@@ -249,7 +244,6 @@ const CounsellorDashboard: React.FC = () => {
           </form>
         </Modal>
 
-        {/* Risk Assessment Modal */}
         <Modal
           isOpen={showRiskAssessment}
           onClose={() => setShowRiskAssessment(false)}
@@ -295,7 +289,6 @@ const CounsellorDashboard: React.FC = () => {
           </form>
         </Modal>
 
-        {/* Chat Modal */}
         {chatSurvivor && (
           <ChatModal
             isOpen={chatOpen}

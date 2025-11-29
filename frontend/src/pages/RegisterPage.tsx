@@ -8,7 +8,6 @@ import { UserRole } from '../types';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
-import './AuthPage.css';
 
 const registerSchema = yup.object({
   name: yup.string().min(2, 'Name must be at least 2 characters').required('Name is required'),

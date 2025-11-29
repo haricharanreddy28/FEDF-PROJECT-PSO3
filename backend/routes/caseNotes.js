@@ -4,22 +4,22 @@ import { authenticate, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Get all case notes (filtered by role)
+
 router.get('/', authenticate, async (req, res) => {
   try {
     let query = {};
 
-    // Counsellors see only their notes
+    
     if (req.user.role === 'counsellor') {
       query.counsellorId = req.user.id;
     }
 
-    // Victims see only their notes
+    
     if (req.user.role === 'victim') {
       query.survivorId = req.user.id;
     }
 
-    // Admins see all
+    
     const notes = await CaseNote.find(query)
       .populate('survivorId', 'name email')
       .populate('counsellorId', 'name email')
@@ -31,7 +31,7 @@ router.get('/', authenticate, async (req, res) => {
   }
 });
 
-// Get case note by ID
+
 router.get('/:id', authenticate, async (req, res) => {
   try {
     const note = await CaseNote.findById(req.params.id)
@@ -42,7 +42,7 @@ router.get('/:id', authenticate, async (req, res) => {
       return res.status(404).json({ message: 'Case note not found' });
     }
 
-    // Check access
+    
     if (
       req.user.role !== 'admin' &&
       note.survivorId._id.toString() !== req.user.id &&
@@ -57,7 +57,7 @@ router.get('/:id', authenticate, async (req, res) => {
   }
 });
 
-// Create case note (Counsellor only)
+
 router.post('/', authenticate, authorize('counsellor', 'admin'), async (req, res) => {
   try {
     const { survivorId, notes, riskLevel } = req.body;
@@ -79,7 +79,7 @@ router.post('/', authenticate, authorize('counsellor', 'admin'), async (req, res
   }
 });
 
-// Update case note (Counsellor/Admin)
+
 router.put('/:id', authenticate, authorize('counsellor', 'admin'), async (req, res) => {
   try {
     const note = await CaseNote.findById(req.params.id);
@@ -88,7 +88,7 @@ router.put('/:id', authenticate, authorize('counsellor', 'admin'), async (req, r
       return res.status(404).json({ message: 'Case note not found' });
     }
 
-    // Check if counsellor owns this note or is admin
+    
     if (req.user.role !== 'admin' && note.counsellorId.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Access denied' });
     }
@@ -107,7 +107,7 @@ router.put('/:id', authenticate, authorize('counsellor', 'admin'), async (req, r
   }
 });
 
-// Delete case note (Counsellor/Admin)
+
 router.delete('/:id', authenticate, authorize('counsellor', 'admin'), async (req, res) => {
   try {
     const note = await CaseNote.findById(req.params.id);
@@ -116,7 +116,7 @@ router.delete('/:id', authenticate, authorize('counsellor', 'admin'), async (req
       return res.status(404).json({ message: 'Case note not found' });
     }
 
-    // Check if counsellor owns this note or is admin
+    
     if (req.user.role !== 'admin' && note.counsellorId.toString() !== req.user.id) {
       return res.status(403).json({ message: 'Access denied' });
     }

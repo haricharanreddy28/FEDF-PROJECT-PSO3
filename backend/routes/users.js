@@ -4,7 +4,7 @@ import { authenticate, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Get all users (Admin only)
+
 router.get('/', authenticate, authorize('admin'), async (req, res) => {
   try {
     const users = await User.find().select('-password');
@@ -14,7 +14,7 @@ router.get('/', authenticate, authorize('admin'), async (req, res) => {
   }
 });
 
-// Get user by ID
+
 router.get('/:id', authenticate, async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password');
@@ -27,7 +27,7 @@ router.get('/:id', authenticate, async (req, res) => {
   }
 });
 
-// Create user (Admin only)
+
 router.post('/', authenticate, authorize('admin'), async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -48,7 +48,7 @@ router.post('/', authenticate, authorize('admin'), async (req, res) => {
   }
 });
 
-// Update user (Admin only)
+
 router.put('/:id', authenticate, authorize('admin'), async (req, res) => {
   try {
     const { name, email, role, password } = req.body;
@@ -73,7 +73,7 @@ router.put('/:id', authenticate, authorize('admin'), async (req, res) => {
   }
 });
 
-// Delete user (Admin only)
+
 router.delete('/:id', authenticate, authorize('admin'), async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);

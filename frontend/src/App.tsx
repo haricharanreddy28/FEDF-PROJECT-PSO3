@@ -4,7 +4,6 @@ import { ThemeProvider } from './context/ThemeContext';
 import { initializeDefaultData } from './utils/storage';
 import ProtectedRoute from './components/ProtectedRoute';
 
-// Pages
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -18,11 +17,9 @@ import ContactCounsellorPage from './pages/ContactCounsellorPage';
 import SupportServicesPage from './pages/SupportServicesPage';
 import NotFoundPage from './pages/NotFoundPage';
 
-import './App.css';
 
 function App() {
   useEffect(() => {
-    // Initialize default data on app load
     initializeDefaultData();
   }, []);
 
@@ -30,7 +27,6 @@ function App() {
     <ThemeProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -39,7 +35,6 @@ function App() {
           <Route path="/contact-counsellor" element={<ContactCounsellorPage />} />
           <Route path="/support-services" element={<SupportServicesPage />} />
 
-          {/* Protected Routes - Role-based */}
           <Route
             path="/dashboard/victim"
             element={
@@ -73,7 +68,6 @@ function App() {
             }
           />
 
-          {/* 404 Page */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>

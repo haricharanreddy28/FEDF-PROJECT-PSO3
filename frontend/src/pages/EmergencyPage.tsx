@@ -2,7 +2,6 @@ import React from 'react';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import SafeExitButton from '../components/SafeExitButton';
-import './EmergencyPage.css';
 
 const EmergencyPage: React.FC = () => {
   const emergencyNumbers = [

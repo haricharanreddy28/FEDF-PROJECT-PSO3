@@ -4,7 +4,7 @@ import { authenticate, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Get all support services
+
 router.get('/', async (req, res) => {
   try {
     const services = await SupportService.find();
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get support service by ID
+
 router.get('/:id', async (req, res) => {
   try {
     const service = await SupportService.findById(req.params.id);
@@ -27,7 +27,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create support service (Admin only)
+
 router.post('/', authenticate, authorize('admin'), async (req, res) => {
   try {
     const service = new SupportService(req.body);
@@ -38,7 +38,7 @@ router.post('/', authenticate, authorize('admin'), async (req, res) => {
   }
 });
 
-// Update support service (Admin only)
+
 router.put('/:id', authenticate, authorize('admin'), async (req, res) => {
   try {
     const service = await SupportService.findByIdAndUpdate(
@@ -57,7 +57,7 @@ router.put('/:id', authenticate, authorize('admin'), async (req, res) => {
   }
 });
 
-// Delete support service (Admin only)
+
 router.delete('/:id', authenticate, authorize('admin'), async (req, res) => {
   try {
     const service = await SupportService.findByIdAndDelete(req.params.id);

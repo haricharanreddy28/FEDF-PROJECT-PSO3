@@ -11,22 +11,22 @@ const seedData = async () => {
   try {
     await connectDB();
 
-    // Clear existing data
+    
     await User.deleteMany({});
     await LegalRight.deleteMany({});
     await SupportService.deleteMany({});
 
-    // Create default admin user
+    
     const adminUser = new User({
       name: 'Admin User',
       email: 'admin@safeplace.com',
-      password: 'admin123', // Will be hashed by pre-save hook
+      password: 'admin123', 
       role: 'admin',
     });
     await adminUser.save();
     console.log('✅ Admin user created');
 
-    // Create default legal rights
+    
     const legalRights = [
       {
         title: 'Constitutional Right to Equality (Article 14 & 15)',
@@ -51,7 +51,7 @@ const seedData = async () => {
     await LegalRight.insertMany(legalRights);
     console.log('✅ Legal rights seeded');
 
-    // Create default support services
+    
     const supportServices = [
       {
         name: 'Women Helpline (All India)',

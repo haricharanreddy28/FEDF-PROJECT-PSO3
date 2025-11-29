@@ -7,7 +7,6 @@ import { loginUser } from '../utils/auth';
 import Button from '../components/Button';
 import Card from '../components/Card';
 import LoadingSpinner from '../components/LoadingSpinner';
-import './AuthPage.css';
 
 const loginSchema = yup.object({
   email: yup.string().email('Invalid email format').required('Email is required'),
@@ -40,7 +39,7 @@ const LoginPage: React.FC = () => {
       const result = await loginUser(data.email, data.password);
       
       if (result.success && result.user) {
-        // Redirect based on role
+        
         const role = result.user.role;
         switch (role) {
           case 'admin':

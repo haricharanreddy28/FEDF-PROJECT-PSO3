@@ -10,7 +10,7 @@ const STORAGE_KEYS = {
   THEME: 'dv_app_theme',
 };
 
-// User Management
+
 export const getUsers = (): User[] => {
   const data = localStorage.getItem(STORAGE_KEYS.USERS);
   return data ? JSON.parse(data) : [];
@@ -39,7 +39,7 @@ export const deleteUser = (userId: string): void => {
   localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(filtered));
 };
 
-// Current User (Session)
+
 export const getCurrentUser = (): User | null => {
   const data = sessionStorage.getItem(STORAGE_KEYS.CURRENT_USER);
   return data ? JSON.parse(data) : null;
@@ -53,7 +53,7 @@ export const setCurrentUser = (user: User | null): void => {
   }
 };
 
-// Legal Rights
+
 export const getLegalRights = (): LegalRight[] => {
   const data = localStorage.getItem(STORAGE_KEYS.LEGAL_RIGHTS);
   return data ? JSON.parse(data) : [];
@@ -76,7 +76,7 @@ export const deleteLegalRight = (id: string): void => {
   localStorage.setItem(STORAGE_KEYS.LEGAL_RIGHTS, JSON.stringify(filtered));
 };
 
-// Support Services
+
 export const getSupportServices = (): SupportService[] => {
   const data = localStorage.getItem(STORAGE_KEYS.SUPPORT_SERVICES);
   return data ? JSON.parse(data) : [];
@@ -99,7 +99,7 @@ export const deleteSupportService = (id: string): void => {
   localStorage.setItem(STORAGE_KEYS.SUPPORT_SERVICES, JSON.stringify(filtered));
 };
 
-// Case Notes
+
 export const getCaseNotes = (): CaseNote[] => {
   const data = localStorage.getItem(STORAGE_KEYS.CASE_NOTES);
   return data ? JSON.parse(data) : [];
@@ -122,7 +122,7 @@ export const deleteCaseNote = (id: string): void => {
   localStorage.setItem(STORAGE_KEYS.CASE_NOTES, JSON.stringify(filtered));
 };
 
-// Theme
+
 export const getTheme = (): 'light' | 'dark' => {
   const theme = localStorage.getItem(STORAGE_KEYS.THEME);
   return (theme as 'light' | 'dark') || 'light';
@@ -132,20 +132,20 @@ export const setTheme = (theme: 'light' | 'dark'): void => {
   localStorage.setItem(STORAGE_KEYS.THEME, theme);
 };
 
-// Clear all session data (safety feature)
+
 export const clearSessionData = (): void => {
   sessionStorage.clear();
 };
 
-// Clear all data (emergency)
+
 export const clearAllData = (): void => {
   localStorage.clear();
   sessionStorage.clear();
 };
 
-// Initialize default data
+
 export const initializeDefaultData = (): void => {
-  // Initialize default legal rights if empty
+  
   if (getLegalRights().length === 0) {
     const defaultRights: LegalRight[] = [
       {
@@ -296,7 +296,7 @@ export const initializeDefaultData = (): void => {
     localStorage.setItem(STORAGE_KEYS.LEGAL_RIGHTS, JSON.stringify(defaultRights));
   }
 
-  // Initialize default support services if empty
+  
   if (getSupportServices().length === 0) {
     const defaultServices: SupportService[] = [
       {
@@ -359,13 +359,13 @@ export const initializeDefaultData = (): void => {
     localStorage.setItem(STORAGE_KEYS.SUPPORT_SERVICES, JSON.stringify(defaultServices));
   }
 
-  // Initialize default admin user if no users exist
+  
   if (getUsers().length === 0) {
     const adminUser: User = {
       id: 'admin-1',
       name: 'Admin User',
       email: 'admin@safeplace.com',
-      password: 'admin123', // In production, this should be hashed
+      password: 'admin123', 
       role: 'admin',
       createdAt: new Date().toISOString(),
     };

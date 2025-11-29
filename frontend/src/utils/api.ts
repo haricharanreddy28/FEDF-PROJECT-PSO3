@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Backend API base URL
+
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 const api = axios.create({
@@ -11,10 +11,10 @@ const api = axios.create({
   },
 });
 
-// Request interceptor
+
 api.interceptors.request.use(
   (config) => {
-    // Add auth token if available
+    
     const token = localStorage.getItem('auth_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -26,12 +26,12 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      // Server responded with error
+      
       switch (error.response.status) {
         case 401:
           return Promise.reject(new Error('Unauthorized. Please login again.'));
@@ -43,16 +43,16 @@ api.interceptors.response.use(
           return Promise.reject(new Error(error.response.data?.message || 'An error occurred'));
       }
     } else if (error.request) {
-      // Request made but no response
+      
       return Promise.reject(new Error('Network issue. Please check your connection.'));
     } else {
-      // Something else happened
+      
       return Promise.reject(new Error('Failed to load data. Please try again.'));
     }
   }
 );
 
-// API functions with retry logic
+
 const retryRequest = async (fn: () => Promise<any>, retries = 3): Promise<any> => {
   try {
     return await fn();
@@ -65,7 +65,7 @@ const retryRequest = async (fn: () => Promise<any>, retries = 3): Promise<any> =
   }
 };
 
-// API functions
+
 export const fetchLegalRights = async () => {
   try {
     const response = await api.get('/legal-rights');

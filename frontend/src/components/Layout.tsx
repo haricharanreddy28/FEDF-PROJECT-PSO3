@@ -5,7 +5,6 @@ import { logoutUser } from '../utils/auth';
 import { useTheme } from '../context/ThemeContext';
 import Button from './Button';
 import SafeExitButton from './SafeExitButton';
-import './Layout.css';
 
 interface LayoutProps {
   children: React.ReactNode;

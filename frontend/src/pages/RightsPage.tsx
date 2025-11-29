@@ -2,7 +2,6 @@ import React from 'react';
 import { getLegalRights } from '../utils/storage';
 import Card from '../components/Card';
 import SafeExitButton from '../components/SafeExitButton';
-import './RightsPage.css';
 
 const RightsPage: React.FC = () => {
   const legalRights = getLegalRights();

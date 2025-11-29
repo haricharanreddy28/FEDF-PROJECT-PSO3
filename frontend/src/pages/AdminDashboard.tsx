@@ -18,7 +18,6 @@ import Modal from '../components/Modal';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import './Dashboard.css';
 
 const userSchema = yup.object({
   name: yup.string().required('Name is required'),
@@ -166,7 +165,6 @@ const AdminDashboard: React.FC = () => {
   return (
     <Layout title="Admin Dashboard">
       <div className="dashboard">
-        {/* User Management */}
         <section className="dashboard-section">
           <div className="section-header">
             <h2 className="section-title">User Management</h2>
@@ -214,7 +212,6 @@ const AdminDashboard: React.FC = () => {
           </div>
         </section>
 
-        {/* Content Management - Legal Rights */}
         <section className="dashboard-section">
           <h2 className="section-title">Legal Rights Content</h2>
           <div className="cards-grid">
@@ -228,7 +225,6 @@ const AdminDashboard: React.FC = () => {
           </div>
         </section>
 
-        {/* Content Management - Support Services */}
         <section className="dashboard-section">
           <div className="section-header">
             <h2 className="section-title">Support Services</h2>
@@ -266,7 +262,6 @@ const AdminDashboard: React.FC = () => {
           </div>
         </section>
 
-        {/* Secure Login & Logs */}
         <section className="dashboard-section">
           <h2 className="section-title">System Logs</h2>
           <Card>
@@ -277,7 +272,6 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </section>
 
-        {/* API Monitoring */}
         <section className="dashboard-section">
           <h2 className="section-title">API Monitoring</h2>
           <Card>
@@ -297,7 +291,6 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </section>
 
-        {/* User Modal */}
         <Modal
           isOpen={showUserModal}
           onClose={() => {
@@ -352,7 +345,6 @@ const AdminDashboard: React.FC = () => {
           </form>
         </Modal>
 
-        {/* Service Modal */}
         <Modal
           isOpen={showServiceModal}
           onClose={() => {

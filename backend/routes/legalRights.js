@@ -4,7 +4,7 @@ import { authenticate, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Get all legal rights
+
 router.get('/', async (req, res) => {
   try {
     const rights = await LegalRight.find().sort({ updatedAt: -1 });
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get legal right by ID
+
 router.get('/:id', async (req, res) => {
   try {
     const right = await LegalRight.findById(req.params.id);
@@ -27,7 +27,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Create legal right (Admin/Legal Advisor)
+
 router.post('/', authenticate, authorize('admin', 'legal'), async (req, res) => {
   try {
     const { title, description, category } = req.body;
@@ -44,7 +44,7 @@ router.post('/', authenticate, authorize('admin', 'legal'), async (req, res) => 
   }
 });
 
-// Update legal right (Admin/Legal Advisor)
+
 router.put('/:id', authenticate, authorize('admin', 'legal'), async (req, res) => {
   try {
     const { title, description, category } = req.body;
@@ -70,7 +70,7 @@ router.put('/:id', authenticate, authorize('admin', 'legal'), async (req, res) =
   }
 });
 
-// Delete legal right (Admin/Legal Advisor)
+
 router.delete('/:id', authenticate, authorize('admin', 'legal'), async (req, res) => {
   try {
     const right = await LegalRight.findByIdAndDelete(req.params.id);
